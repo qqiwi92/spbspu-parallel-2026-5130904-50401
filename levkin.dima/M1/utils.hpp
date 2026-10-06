@@ -21,8 +21,8 @@ namespace levkin
   struct BorderCircle
   {
     Circle circle;
-    std::array< int, 2 > xRange;
-    std::array< int, 2 > yRange;
+    BorderRange xRange;
+    BorderRange yRange;
 
     BorderCircle(Circle const &c, std::array< BorderRange, 2 > const &ranges);
   };

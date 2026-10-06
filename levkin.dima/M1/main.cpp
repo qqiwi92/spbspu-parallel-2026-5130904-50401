@@ -32,7 +32,6 @@ int main(int argc, char *argv[])
   size_t triesPerTest = tries / threads;
 
   levkin::BorderCircleVec cv = levkin::getData(std::cin);
-
   std::vector< std::future< size_t > > futures;
   futures.reserve(threads);
 

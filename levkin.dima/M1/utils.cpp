@@ -1,9 +1,9 @@
 #include "utils.hpp"
 #include <array>
+#include <iostream>
 #include <istream>
 #include <random>
 #include <vector>
-
 namespace levkin
 {
   std::istream &operator>>(std::istream &is, Circle &c)
@@ -13,7 +13,7 @@ namespace levkin
 
     return is;
   }
-  BorderCircle::BorderCircle(Circle const &c, std::array< BorderRange, 2 > const &ranges) :
+  BorderCircle::BorderCircle(Circle const &c, std::array< BorderRange, 2 > const &ranges):
       circle(c),
       xRange(ranges[0]),
       yRange(ranges[1])
@@ -77,7 +77,10 @@ namespace levkin
 
       std::uniform_int_distribution< int > xDist(xRng[0], xRng[1]);
       std::uniform_int_distribution< int > yDist(yRng[0], yRng[1]);
-      result += gotIn(cv, 0, 0);
+
+      int randX = xDist(gen);
+      int randY = xDist(gen);
+      result += gotIn(cv[i].circle, randX, randY);
     }
     return result;
   }
