@@ -14,7 +14,7 @@ namespace levkin
     return is;
   }
 
-  void BorderCircleVec::updateRanges()
+  void CirclesWithRanges::updateRanges()
   {
     if (circles.empty())
     {
@@ -40,7 +40,7 @@ namespace levkin
     ranges.xRange = {minX, maxX};
     ranges.yRange = {minY, maxY};
   }
-  size_t BorderCircleVec::rangeArea() const
+  size_t CirclesWithRanges::rangeArea() const
   {
     return (ranges.xRange[1] - ranges.xRange[0]) * (ranges.yRange[1] - ranges.yRange[0]);
   }
@@ -63,10 +63,10 @@ namespace levkin
     return dx * dx + dy * dy <= c.radius * c.radius;
   }
 
-  AnyAllResult gotIn(BorderCircleVec const &cv, double x, double y)
+  AnyAllResult gotIn(CirclesWithRanges const &cv, double x, double y)
   {
     AnyAllResult result{0, 1};
-    for (Circle c : cv.circles)
+    for (Circle const &c : cv.circles)
     {
       bool hit = gotIn(c, x, y);
       result.any = result.any || hit;
@@ -75,11 +75,11 @@ namespace levkin
     return result;
   }
 
-  BorderCircleVec getData(std::istream &is)
+  CirclesWithRanges getData(std::istream &is)
   {
 
     Circle dummyCircle;
-    BorderCircleVec dataVec;
+    CirclesWithRanges dataVec;
 
     while (is >> dummyCircle)
     {
@@ -94,7 +94,7 @@ namespace levkin
     dataVec.updateRanges();
     return dataVec;
   }
-  AnyAllResult runTests(size_t howManyTests, size_t seed, BorderCircleVec const &cv)
+  AnyAllResult runTests(size_t howManyTests, size_t seed, CirclesWithRanges const &cv)
   {
     std::mt19937 gen(seed);
     AnyAllResult result{0, 0};
@@ -111,7 +111,6 @@ namespace levkin
       double randY = yDist(gen);
 
       result += gotIn(cv, randX, randY);
-      
     }
 
     return result;

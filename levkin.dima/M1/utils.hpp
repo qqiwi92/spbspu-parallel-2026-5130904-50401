@@ -15,7 +15,7 @@ namespace levkin
 
   struct AnyAllResult
   {
-    size_t any, all;
+    size_t any, all = 0;
 
     AnyAllResult &operator+=(const AnyAllResult &other)
     {
@@ -25,8 +25,7 @@ namespace levkin
     }
   };
 
-
-  struct BorderCircleVec
+  struct CirclesWithRanges
   {
     struct Ranges
     {
@@ -42,10 +41,10 @@ namespace levkin
   };
   std::istream &operator>>(std::istream &is, Circle &c);
 
-  BorderCircleVec getData(std::istream &is);
+  CirclesWithRanges getData(std::istream &is);
   bool gotIn(levkin::Circle c, double x, double y);
-  AnyAllResult gotIn(BorderCircleVec const &cv, double x, double y);
-  AnyAllResult runTests(size_t howManyTests, size_t seed, BorderCircleVec const &cv);
+  AnyAllResult gotIn(CirclesWithRanges const &cv, double x, double y);
+  AnyAllResult runTests(size_t howManyTests, size_t seed, CirclesWithRanges const &cv);
   std::array< BorderRange, 2 > getBorderSquare(Circle const &c);
 
 }
