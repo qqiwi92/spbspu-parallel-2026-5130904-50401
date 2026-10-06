@@ -14,6 +14,12 @@ bool gotIn(levkin::Circle c, int x, int y)
 
 bool gotIn(levkin::CircleVec cv, int x, int y)
 {
+  bool result = true;
+  for (levkin::Circle c : cv)
+  {
+    result = result && gotIn(c, x, y);
+  }
+  return result;
 }
 
 int main(int argc, char *argv[])
