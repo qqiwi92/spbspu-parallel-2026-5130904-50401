@@ -61,7 +61,7 @@ namespace levkin
 
   BorderCircleVec getData(std::istream &is);
   bool gotIn(levkin::Circle c, double x, double y);
-  AnyAllResult gotIn(BorderCircleVec &cv, double x, double y);
+  AnyAllResult gotIn(BorderCircleVec const &cv, double x, double y);
   AnyAllResult runTests(size_t howManyTests, size_t seed, BorderCircleVec const &cv);
   std::array< BorderRange, 2 > getBorderSquare(Circle const &c);
 
