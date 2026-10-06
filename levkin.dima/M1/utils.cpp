@@ -67,20 +67,23 @@ namespace levkin
   }
   size_t runTests(size_t howManyTests, size_t seed, BorderCircleVec const &cv)
   {
-
     std::mt19937 gen(seed);
     size_t result = 0;
-    for (size_t i = 0; i < howManyTests; ++i)
+    
+    for (size_t testCount = 0; testCount < howManyTests; ++testCount)
     {
-      BorderRange xRng = cv[i].xRange;
-      BorderRange yRng = cv[i].yRange;
+      for (size_t i = 0; i < cv.size(); ++i)
+      {
+        BorderRange xRng = cv[i].xRange;
+        BorderRange yRng = cv[i].yRange;
 
-      std::uniform_int_distribution< int > xDist(xRng[0], xRng[1]);
-      std::uniform_int_distribution< int > yDist(yRng[0], yRng[1]);
+        std::uniform_int_distribution< int > xDist(xRng[0], xRng[1]);
+        std::uniform_int_distribution< int > yDist(yRng[0], yRng[1]);
 
-      int randX = xDist(gen);
-      int randY = xDist(gen);
-      result += gotIn(cv[i].circle, randX, randY);
+        int randX = xDist(gen);
+        int randY = xDist(gen);
+        result += gotIn(cv[i].circle, randX, randY);
+      }
     }
     return result;
   }

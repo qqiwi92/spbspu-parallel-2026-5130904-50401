@@ -47,4 +47,5 @@ int main(int argc, char *argv[])
   }
 
   std::cout << static_cast< double >(totalGot) / tries << '\n';
+  std::cout <<totalGot <<  " " <<  tries << '\n';
 }
