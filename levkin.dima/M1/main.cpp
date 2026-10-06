@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
   size_t triesPerTest = tries / threads;
 
   levkin::BorderCircleVec cv = levkin::getData(std::cin);
-  std::vector< std::future< size_t > > futures;
+  std::vector< std::future< levkin::AnyAllResult > > futures;
   futures.reserve(threads);
 
   for (size_t i = 0; i < threads; ++i)
@@ -40,13 +40,14 @@ int main(int argc, char *argv[])
     futures.emplace_back(std::async(levkin::runTests, triesPerTest, seed + i, cv));
   }
 
-  size_t totalGot = 0;
+  levkin::AnyAllResult hit;
   for (auto &ft : futures)
   {
-    totalGot += ft.get();
+    hit += ft.get();
   }
 
-  double res = static_cast< double >(totalGot) / tries;
-  std::cout << res * cv.rangeArea() << "\n";
-  std::cout << totalGot << " " << tries << '\n';
+  double resAll = static_cast< double >(hit.all) / tries;
+  double resAny = static_cast< double >(hit.any) / tries;
+  std::cout << resAll * cv.rangeArea() << "\n";
+  std::cout << resAny * cv.rangeArea() << "\n";
 }

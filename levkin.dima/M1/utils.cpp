@@ -61,7 +61,7 @@ namespace levkin
 
     return result;
   }
-  bool gotIn(Circle c, int x, int y)
+  bool gotIn(Circle c, double x, double y)
   {
     int dx = c.x - x;
     int dy = c.y - y;
@@ -69,12 +69,14 @@ namespace levkin
     return dx * dx + dy * dy <= c.radius * c.radius;
   }
 
-  bool gotIn(BorderCircleVec cv, int x, int y)
+  AnyAllResult gotIn(BorderCircleVec const &cv, double x, double y)
   {
-    bool result = true;
+    AnyAllResult result{0, 1};
     for (Circle c : cv.circles)
     {
-      result = result && gotIn(c, x, y);
+      bool hit = gotIn(c, x, y);
+      result.any = result.any || hit;
+      result.all = result.all && hit;
     }
     return result;
   }
@@ -98,26 +100,26 @@ namespace levkin
     dataVec.updateRanges();
     return dataVec;
   }
-  size_t runTests(size_t howManyTests, size_t seed, BorderCircleVec const &cv)
+  AnyAllResult runTests(size_t howManyTests, size_t seed, BorderCircleVec const &cv)
   {
     std::mt19937 gen(seed);
-    size_t result = 0;
+    AnyAllResult result{0, 0};
 
     BorderRange xRng = cv.ranges.xRange;
     BorderRange yRng = cv.ranges.yRange;
 
-    std::uniform_int_distribution< int > xDist(xRng[0], xRng[1]);
-    std::uniform_int_distribution< int > yDist(yRng[0], yRng[1]);
+    std::uniform_real_distribution< double > xDist(xRng[0], xRng[1]);
+    std::uniform_real_distribution< double > yDist(yRng[0], yRng[1]);
+
     for (size_t testCount = 0; testCount < howManyTests; ++testCount)
     {
-      for (size_t i = 0; i < cv.circles.size(); ++i)
-      {
+      double randX = xDist(gen);
+      double randY = xDist(gen);
 
-        int randX = xDist(gen);
-        int randY = xDist(gen);
-        result += gotIn(cv.circles[i], randX, randY);
-      }
+      result += gotIn(cv, randX, randY);
+      
     }
+
     return result;
   }
 }

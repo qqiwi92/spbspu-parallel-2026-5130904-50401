@@ -3,7 +3,6 @@
 
 #include <array>
 #include <istream>
-#include <ostream>
 #include <vector>
 namespace levkin
 {
@@ -16,6 +15,23 @@ namespace levkin
   struct Circle
   {
     int x, y, radius;
+  };
+  struct TestResult
+  {
+    size_t hitsAll;
+    size_t hitsAny;
+  };
+
+  struct AnyAllResult
+  {
+    size_t any, all;
+
+    AnyAllResult &operator+=(const AnyAllResult &other)
+    {
+      any += other.any;
+      all += other.all;
+      return *this;
+    }
   };
 
   struct BorderCircle
@@ -44,9 +60,9 @@ namespace levkin
   std::istream &operator>>(std::istream &is, Circle &c);
 
   BorderCircleVec getData(std::istream &is);
-  bool gotIn(levkin::Circle c, int x, int y);
-  bool gotIn(levkin::BorderCircleVec cv, int x, int y);
-  size_t runTests(size_t howManyTests, size_t seed, BorderCircleVec const &cv);
+  bool gotIn(levkin::Circle c, double x, double y);
+  AnyAllResult gotIn(BorderCircleVec &cv, double x, double y);
+  AnyAllResult runTests(size_t howManyTests, size_t seed, BorderCircleVec const &cv);
   std::array< BorderRange, 2 > getBorderSquare(Circle const &c);
 
 }
