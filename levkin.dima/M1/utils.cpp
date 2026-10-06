@@ -63,8 +63,8 @@ namespace levkin
   }
   bool gotIn(Circle c, double x, double y)
   {
-    int dx = c.x - x;
-    int dy = c.y - y;
+    double dx = c.x - x;
+    double dy = c.y - y;
 
     return dx * dx + dy * dy <= c.radius * c.radius;
   }

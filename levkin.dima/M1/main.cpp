@@ -48,6 +48,6 @@ int main(int argc, char *argv[])
 
   double resAll = static_cast< double >(hit.all) / tries;
   double resAny = static_cast< double >(hit.any) / tries;
+  std::cout << resAny * cv.rangeArea() << " ";
   std::cout << resAll * cv.rangeArea() << "\n";
-  std::cout << resAny * cv.rangeArea() << "\n";
 }
