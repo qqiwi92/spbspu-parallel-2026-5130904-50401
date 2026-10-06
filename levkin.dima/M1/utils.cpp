@@ -114,7 +114,7 @@ namespace levkin
     for (size_t testCount = 0; testCount < howManyTests; ++testCount)
     {
       double randX = xDist(gen);
-      double randY = xDist(gen);
+      double randY = yDist(gen);
 
       result += gotIn(cv, randX, randY);
       
