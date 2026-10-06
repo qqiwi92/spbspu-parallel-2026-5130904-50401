@@ -59,7 +59,7 @@ namespace levkin {
     double dx = c.x - x;
     double dy = c.y - y;
 
-    return dx * dx + dy * dy <= c.radius * c.radius;
+    return dx * dx + dy * dy <= c.radius * static_cast< double >(c.radius);
   }
 
   AnyAllResult gotIn(CirclesWithRanges const &cv, double x, double y)
@@ -91,7 +91,7 @@ namespace levkin {
   }
   AnyAllResult runTests(size_t howManyTests, size_t seed, CirclesWithRanges const &cv)
   {
-    std::mt19937_64 gen(seed);
+    std::mt19937 gen(seed);
     AnyAllResult result{0, 0};
 
     BorderRange xRng = cv.ranges.xRange;
