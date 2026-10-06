@@ -7,19 +7,10 @@
 namespace levkin
 {
   using BorderRange = std::array< int, 2 >;
-  struct p_t
-  {
-    int x, y;
-  };
 
   struct Circle
   {
     int x, y, radius;
-  };
-  struct TestResult
-  {
-    size_t hitsAll;
-    size_t hitsAny;
   };
 
   struct AnyAllResult
@@ -34,14 +25,6 @@ namespace levkin
     }
   };
 
-  struct BorderCircle
-  {
-    Circle circle;
-    BorderRange xRange;
-    BorderRange yRange;
-
-    BorderCircle(Circle const &c, std::array< BorderRange, 2 > const &ranges);
-  };
 
   struct BorderCircleVec
   {

@@ -13,12 +13,6 @@ namespace levkin
 
     return is;
   }
-  BorderCircle::BorderCircle(Circle const &c, std::array< BorderRange, 2 > const &ranges):
-      circle(c),
-      xRange(ranges[0]),
-      yRange(ranges[1])
-  {
-  }
 
   void BorderCircleVec::updateRanges()
   {
