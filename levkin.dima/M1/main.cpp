@@ -46,6 +46,7 @@ int main(int argc, char *argv[])
     totalGot += ft.get();
   }
 
-  std::cout << static_cast< double >(totalGot) / tries << '\n';
-  std::cout <<totalGot <<  " " <<  tries << '\n';
+  double res = static_cast< double >(totalGot) / tries;
+  std::cout << res * cv.rangeArea() << "\n";
+  std::cout << totalGot << " " << tries << '\n';
 }

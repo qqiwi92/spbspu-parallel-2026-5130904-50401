@@ -27,7 +27,20 @@ namespace levkin
     BorderCircle(Circle const &c, std::array< BorderRange, 2 > const &ranges);
   };
 
-  using BorderCircleVec = std::vector< BorderCircle >;
+  struct BorderCircleVec
+  {
+    struct Ranges
+    {
+      BorderRange xRange;
+      BorderRange yRange;
+    };
+
+    std::vector< Circle > circles{};
+    Ranges ranges;
+
+    void updateRanges();
+    size_t rangeArea() const;
+  };
   std::istream &operator>>(std::istream &is, Circle &c);
 
   BorderCircleVec getData(std::istream &is);
