@@ -1,10 +1,10 @@
 #include "utils.hpp"
 #include <cstddef>
+#include <future>
 #include <iostream>
 #include <stdexcept>
 #include <string>
-
-
+#include <vector>
 
 int main(int argc, char *argv[])
 {
@@ -30,16 +30,21 @@ int main(int argc, char *argv[])
   }
 
   size_t triesPerTest = tries / threads;
-  levkin::CircleVec dataVec;
 
+  levkin::CircleVec data = levkin::getData(std::cin);
+
+  std::vector< std::future< size_t > > futures;
+  futures.reserve(threads);
   for (size_t i = 0; i < threads; ++i)
   {
-    dataVec.emplace_back();
-    levkin::Circle &circle = dataVec[i];
-
-    if (!(std::cin >> circle))
-    {
-      throw std::invalid_argument("bad input file");
-    }
+    futures.emplace_back(std::async(levkin::runTests, triesPerTest, seed));
   }
+
+  size_t totalGot = 0;
+  for (auto &ft : futures)
+  {
+    totalGot += ft.get();
+  }
+
+  std::cout << static_cast< double >(totalGot) / tries << '\n';
 }
