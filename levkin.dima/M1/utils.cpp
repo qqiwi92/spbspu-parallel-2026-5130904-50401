@@ -6,7 +6,7 @@
 
 namespace levkin
 {
-  std::istream &operator<<(std::istream &is, Circle &c)
+  std::istream &operator>>(std::istream &is, Circle &c)
   {
     int dummy;
     is >> c.radius >> dummy >> c.x >> c.y;
@@ -20,60 +20,65 @@ namespace levkin
   {
   }
 
-std::array< p_t, 2 > getBorderSquare(Circle const &c)
-{
-  std::array< p_t, 2 > result;
-  result[0].x = c.x - c.radius;
-  result[0].y = c.y - c.radius;
-  result[1].x = c.x + c.radius;
-  result[1].y = c.y + c.radius;
-
-  return result;
-}
-bool gotIn(Circle c, int x, int y)
-{
-  int dx = c.x - x;
-  int dy = c.y - y;
-
-  return dx * dx + dy * dy <= c.radius * c.radius;
-}
-
-bool gotIn(BorderCircleVec cv, int x, int y)
-{
-  bool result = true;
-  for (Circle c : cv)
+  std::array< p_t, 2 > getBorderSquare(Circle const &c)
   {
-    result = result && gotIn(c, x, y);
+    std::array< p_t, 2 > result;
+    result[0].x = c.x - c.radius;
+    result[0].y = c.y - c.radius;
+    result[1].x = c.x + c.radius;
+    result[1].y = c.y + c.radius;
+
+    return result;
   }
-  return result;
-}
-
-BorderCircleVec getData(std::istream &is)
-{
-
-  Circle dummyCircle;
-  BorderCircleVec dataVec;
-
-  while (is >> dummyCircle)
+  bool gotIn(Circle c, int x, int y)
   {
-    dataVec.emplace_back(dummyCircle, getBorderSquare(dummyCircle));
+    int dx = c.x - x;
+    int dy = c.y - y;
+
+    return dx * dx + dy * dy <= c.radius * c.radius;
   }
 
-  if (!is.eof())
+  bool gotIn(BorderCircleVec cv, int x, int y)
   {
-    throw std::invalid_argument("bad input file");
+    bool result = true;
+    for (BorderCircle c : cv)
+    {
+      result = result && gotIn(c.circle, x, y);
+    }
+    return result;
   }
-  return dataVec;
-}
-size_t runTests(size_t howManyTests, size_t seed, BorderCircleVec const &cv)
-{
 
-  std::mt19937 gen(seed);
-
-  size_t result = 0;
-  for (size_t i = 0; i < howManyTests; ++i)
+  BorderCircleVec getData(std::istream &is)
   {
-    result += gotIn(cv, 0, 0);
+
+    Circle dummyCircle;
+    BorderCircleVec dataVec;
+
+    while (is >> dummyCircle)
+    {
+      dataVec.emplace_back(dummyCircle, getBorderSquare(dummyCircle));
+    }
+
+    if (!is.eof())
+    {
+      throw std::invalid_argument("bad input file");
+    }
+    return dataVec;
   }
-}
+  size_t runTests(size_t howManyTests, size_t seed, BorderCircleVec const &cv)
+  {
+
+    std::mt19937 gen(seed);
+    size_t result = 0;
+    for (size_t i = 0; i < howManyTests; ++i)
+    {
+      p_t xRng = cv[i].xRange;
+      p_t yRng = cv[i].yRange;
+
+      std::uniform_int_distribution< int > xDist(xRng[0], xRng[1]);
+      std::uniform_int_distribution< int > yDist(yRng[0], yRng[1]);
+      result += gotIn(cv, 0, 0);
+    }
+    return result;
+  }
 }
