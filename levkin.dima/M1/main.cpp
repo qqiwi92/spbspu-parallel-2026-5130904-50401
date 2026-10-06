@@ -31,13 +31,14 @@ int main(int argc, char *argv[])
 
   size_t triesPerTest = tries / threads;
 
-  levkin::CircleVec data = levkin::getData(std::cin);
+  levkin::BorderCircleVec cv = levkin::getData(std::cin);
 
   std::vector< std::future< size_t > > futures;
   futures.reserve(threads);
+
   for (size_t i = 0; i < threads; ++i)
   {
-    futures.emplace_back(std::async(levkin::runTests, triesPerTest, seed));
+    futures.emplace_back(std::async(levkin::runTests, triesPerTest, seed + i, cv));
   }
 
   size_t totalGot = 0;
