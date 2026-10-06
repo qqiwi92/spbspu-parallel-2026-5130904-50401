@@ -4,17 +4,14 @@
 #include <array>
 #include <istream>
 #include <vector>
-namespace levkin
-{
+namespace levkin {
   using BorderRange = std::array< int, 2 >;
 
-  struct Circle
-  {
+  struct Circle {
     int x, y, radius;
   };
 
-  struct AnyAllResult
-  {
+  struct AnyAllResult {
     size_t any, all = 0;
 
     AnyAllResult &operator+=(const AnyAllResult &other)
@@ -25,10 +22,8 @@ namespace levkin
     }
   };
 
-  struct CirclesWithRanges
-  {
-    struct Ranges
-    {
+  struct CirclesWithRanges {
+    struct Ranges {
       BorderRange xRange;
       BorderRange yRange;
     };

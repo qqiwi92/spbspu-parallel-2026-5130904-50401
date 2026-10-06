@@ -1,14 +1,15 @@
 #include "utils.hpp"
+
 #include <array>
 #include <iostream>
 #include <istream>
 #include <random>
 #include <vector>
-namespace levkin
-{
+
+namespace levkin {
   std::istream &operator>>(std::istream &is, Circle &c)
   {
-    int dummy;
+    int dummy = 0;
     is >> c.radius >> dummy >> c.x >> c.y;
 
     return is;
@@ -16,8 +17,7 @@ namespace levkin
 
   void CirclesWithRanges::updateRanges()
   {
-    if (circles.empty())
-    {
+    if (circles.empty()) {
       ranges.xRange = {0, 0};
       ranges.yRange = {0, 0};
       return;
@@ -28,8 +28,7 @@ namespace levkin
     int minY = std::numeric_limits< int >::max();
     int maxY = std::numeric_limits< int >::min();
 
-    for (const Circle &c : circles)
-    {
+    for (const Circle &c : circles) {
       std::array< BorderRange, 2 > borderSquare = getBorderSquare(c);
       minX = std::min(minX, borderSquare[0][0]);
       maxX = std::max(maxX, borderSquare[0][1]);
@@ -66,8 +65,7 @@ namespace levkin
   AnyAllResult gotIn(CirclesWithRanges const &cv, double x, double y)
   {
     AnyAllResult result{0, 1};
-    for (Circle const &c : cv.circles)
-    {
+    for (Circle const &c : cv.circles) {
       bool hit = gotIn(c, x, y);
       result.any = result.any || hit;
       result.all = result.all && hit;
@@ -77,17 +75,14 @@ namespace levkin
 
   CirclesWithRanges getData(std::istream &is)
   {
+    Circle dummyCircle{};
+    CirclesWithRanges dataVec{};
 
-    Circle dummyCircle;
-    CirclesWithRanges dataVec;
-
-    while (is >> dummyCircle)
-    {
+    while (is >> dummyCircle) {
       dataVec.circles.emplace_back(dummyCircle);
     }
 
-    if (!is.eof())
-    {
+    if (!is.eof()) {
       throw std::invalid_argument("bad input file");
     }
 
@@ -96,7 +91,7 @@ namespace levkin
   }
   AnyAllResult runTests(size_t howManyTests, size_t seed, CirclesWithRanges const &cv)
   {
-    std::mt19937 gen(seed);
+    std::mt19937_64 gen(seed);
     AnyAllResult result{0, 0};
 
     BorderRange xRng = cv.ranges.xRange;
@@ -105,8 +100,7 @@ namespace levkin
     std::uniform_real_distribution< double > xDist(xRng[0], xRng[1]);
     std::uniform_real_distribution< double > yDist(yRng[0], yRng[1]);
 
-    for (size_t testCount = 0; testCount < howManyTests; ++testCount)
-    {
+    for (size_t testCount = 0; testCount < howManyTests; ++testCount) {
       double randX = xDist(gen);
       double randY = yDist(gen);
 
@@ -115,4 +109,4 @@ namespace levkin
 
     return result;
   }
-}
+} // namespace levkin

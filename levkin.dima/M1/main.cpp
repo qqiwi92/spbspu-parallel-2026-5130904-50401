@@ -1,4 +1,3 @@
-#include "utils.hpp"
 #include <cstddef>
 #include <future>
 #include <iostream>
@@ -6,27 +5,26 @@
 #include <string>
 #include <vector>
 
+#include "utils.hpp"
+
 int main(int argc, char *argv[])
 {
-  if (argc < 3)
-  {
+  constexpr int needAtLeastArgs = 3;
+  if (argc < needAtLeastArgs) {
     throw std::invalid_argument("too few args");
   }
-  size_t threads, tries;
+  size_t threads, tries = 0;
   size_t seed = 0;
-  try
-  {
+  try {
     threads = std::stoull(argv[1]);
     tries = std::stoull(argv[2]);
 
-    if (argc >= 4)
-    {
+    if (argc >= 4) {
       seed = std::stoull(argv[3]);
     }
-  }
-  catch (...)
-  {
-    throw std::invalid_argument("bad input params");
+  } catch (...) {
+    std::cout << "bad input params\n";
+    return 2;
   }
 
   size_t triesPerTest = tries / threads;
@@ -35,14 +33,12 @@ int main(int argc, char *argv[])
   std::vector< std::future< levkin::AnyAllResult > > futures;
   futures.reserve(threads);
 
-  for (size_t i = 0; i < threads; ++i)
-  {
+  for (size_t i = 0; i < threads; ++i) {
     futures.emplace_back(std::async(levkin::runTests, triesPerTest, seed + i, cv));
   }
 
-  levkin::AnyAllResult hit;
-  for (auto &ft : futures)
-  {
+  levkin::AnyAllResult hit{};
+  for (auto &ft : futures) {
     hit += ft.get();
   }
 
