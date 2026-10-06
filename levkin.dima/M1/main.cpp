@@ -19,7 +19,18 @@ int main(int argc, char *argv[]) {
   } catch (...) {
     throw std::invalid_argument("bad input params");
   }
-  std::cout << threads << '\n';
-  std::cout << tries << '\n';
-  std::cout << seed << '\n';
+
+  size_t triesPerTest = tries / threads;
+  levkin::CircleVec dataVec;
+  
+  for (size_t i = 0; i < threads; ++i) {
+      dataVec.emplace_back();
+      levkin::Circle& circle = dataVec[i];
+      
+      if (!(std::cin >> circle)) {
+          throw std::invalid_argument("bad input file");
+      }
+  }
+  
+  
 }
