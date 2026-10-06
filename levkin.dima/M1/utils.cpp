@@ -13,20 +13,20 @@ namespace levkin
 
     return is;
   }
-  BorderCircle::BorderCircle(Circle const &c, std::array< p_t, 2 > const &ranges):
+  BorderCircle::BorderCircle(Circle const &c, std::array< BorderRange, 2 > const &ranges) :
       circle(c),
       xRange(ranges[0]),
       yRange(ranges[1])
   {
   }
 
-  std::array< p_t, 2 > getBorderSquare(Circle const &c)
+  std::array< BorderRange, 2 > getBorderSquare(Circle const &c)
   {
-    std::array< p_t, 2 > result;
-    result[0].x = c.x - c.radius;
-    result[0].y = c.y - c.radius;
-    result[1].x = c.x + c.radius;
-    result[1].y = c.y + c.radius;
+    std::array< BorderRange, 2 > result;
+    result[0][0] = c.x - c.radius;
+    result[0][1] = c.x + c.radius;
+    result[1][0] = c.y - c.radius;
+    result[1][1] = c.y + c.radius;
 
     return result;
   }
@@ -72,8 +72,8 @@ namespace levkin
     size_t result = 0;
     for (size_t i = 0; i < howManyTests; ++i)
     {
-      p_t xRng = cv[i].xRange;
-      p_t yRng = cv[i].yRange;
+      BorderRange xRng = cv[i].xRange;
+      BorderRange yRng = cv[i].yRange;
 
       std::uniform_int_distribution< int > xDist(xRng[0], xRng[1]);
       std::uniform_int_distribution< int > yDist(yRng[0], yRng[1]);

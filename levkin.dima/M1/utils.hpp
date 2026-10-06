@@ -7,6 +7,7 @@
 #include <vector>
 namespace levkin
 {
+  using BorderRange = std::array< int, 2 >;
   struct p_t
   {
     int x, y;
@@ -20,10 +21,10 @@ namespace levkin
   struct BorderCircle
   {
     Circle circle;
-    p_t xRange;
-    p_t yRange;
-    
-    BorderCircle(Circle const &c, std::array< p_t, 2 > const &ranges);
+    std::array< int, 2 > xRange;
+    std::array< int, 2 > yRange;
+
+    BorderCircle(Circle const &c, std::array< BorderRange, 2 > const &ranges);
   };
 
   using BorderCircleVec = std::vector< BorderCircle >;
@@ -33,7 +34,7 @@ namespace levkin
   bool gotIn(levkin::Circle c, int x, int y);
   bool gotIn(levkin::BorderCircleVec cv, int x, int y);
   size_t runTests(size_t howManyTests, size_t seed, BorderCircleVec const &cv);
-  std::array< p_t, 2 > getBorderSquare(Circle const &c);
+  std::array< BorderRange, 2 > getBorderSquare(Circle const &c);
 
 }
 #endif
