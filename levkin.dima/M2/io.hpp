@@ -6,13 +6,15 @@
 #include <array>
 
 namespace levkin {
-  struct IO {
-    IO(std::ifstream& is):
-      _is(is)
-    {}
-    struct db;
 
-    using fn_t = void (*)(db*, std::ifstream&);
+  template< class DB >
+  struct IO {
+    IO(std::ifstream& is, DB& db):
+      _is(is),
+      _db(std::move(db))
+    {}
+
+    using fn_t = void (*)(DB*, std::ifstream&);
 
     struct cmd_t {
       fn_t fn;
@@ -40,6 +42,7 @@ namespace levkin {
     std::array< cmd_t, 32 > _commands{};
     std::size_t _count = 0;
     std::ifstream& _is;
+    DB _db;
   };
 
 }
