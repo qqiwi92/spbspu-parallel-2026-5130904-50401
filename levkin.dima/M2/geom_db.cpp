@@ -39,7 +39,9 @@ namespace levkin {
     }
     for (const std::string& primitiveName : (*it).second.shapeNames) {
         auto it = primitives.find(primitiveName);
-        if (it == primitives.name)
+        if (it == primitives.end()) {
+            
+        }
     }
     return Rect{};
   }
