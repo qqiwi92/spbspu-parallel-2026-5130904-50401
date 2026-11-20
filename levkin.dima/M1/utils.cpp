@@ -3,6 +3,7 @@
 #include <array>
 #include <iostream>
 #include <istream>
+#include <limits>
 #include <random>
 #include <vector>
 
@@ -18,35 +19,36 @@ namespace levkin {
   void CirclesWithRanges::updateRanges()
   {
     if (circles.empty()) {
-      ranges.xRange = {0, 0};
-      ranges.yRange = {0, 0};
+      ranges.x_range = {0, 0};
+      ranges.y_range = {0, 0};
       return;
     }
 
-    int minX = std::numeric_limits< int >::max();
-    int maxX = std::numeric_limits< int >::min();
-    int minY = std::numeric_limits< int >::max();
-    int maxY = std::numeric_limits< int >::min();
+    int min_x = std::numeric_limits< int >::max();
+    int max_x = std::numeric_limits< int >::min();
+    int min_y = std::numeric_limits< int >::max();
+    int max_y = std::numeric_limits< int >::min();
 
     for (const Circle &c : circles) {
-      std::array< BorderRange, 2 > borderSquare = getBorderSquare(c);
-      minX = std::min(minX, borderSquare[0][0]);
-      maxX = std::max(maxX, borderSquare[0][1]);
-      minY = std::min(minY, borderSquare[1][0]);
-      maxY = std::max(maxY, borderSquare[1][1]);
+      const std::array< BorderRange, 2 > border_square = getBorderSquare(c);
+      min_x = std::min(min_x, border_square[0][0]);
+      max_x = std::max(max_x, border_square[0][1]);
+      min_y = std::min(min_y, border_square[1][0]);
+      max_y = std::max(max_y, border_square[1][1]);
     }
 
-    ranges.xRange = {minX, maxX};
-    ranges.yRange = {minY, maxY};
-  }
-  size_t CirclesWithRanges::rangeArea() const
-  {
-    return (ranges.xRange[1] - ranges.xRange[0]) * (ranges.yRange[1] - ranges.yRange[0]);
+    ranges.x_range = {min_x, max_x};
+    ranges.y_range = {min_y, max_y};
   }
 
-  std::array< BorderRange, 2 > getBorderSquare(Circle const &c)
+  size_t CirclesWithRanges::rangeArea() const
   {
-    std::array< BorderRange, 2 > result;
+    return (ranges.x_range[1] - ranges.x_range[0]) * (ranges.y_range[1] - ranges.y_range[0]);
+  }
+
+  std::array< BorderRange, 2 > getBorderSquare(const Circle &c)
+  {
+    std::array< BorderRange, 2 > result{};
     result[0][0] = c.x - c.radius;
     result[0][1] = c.x + c.radius;
     result[1][0] = c.y - c.radius;
@@ -54,64 +56,66 @@ namespace levkin {
 
     return result;
   }
+
   bool gotIn(Circle c, double x, double y)
   {
-    double dx = c.x - x;
-    double dy = c.y - y;
+    const double dx = c.x - x;
+    const double dy = c.y - y;
 
     return dx * dx + dy * dy <= c.radius * static_cast< double >(c.radius);
   }
 
-  AnyAllResult gotIn(CirclesWithRanges const &cv, double x, double y)
+  AnyAllResult gotIn(const CirclesWithRanges &cv, double x, double y)
   {
-    bool hitAny = false;
-    bool hitAll = true;
-    for (Circle const &c : cv.circles) {
-      bool hit = gotIn(c, x, y);
-      hitAny = hitAny || hit;
-      hitAll = hitAll && hit;
+    bool hit_any = false;
+    bool hit_all = true;
+    for (const Circle &c : cv.circles) {
+      const bool hit = gotIn(c, x, y);
+      hit_any = hit_any || hit;
+      hit_all = hit_all && hit;
     }
 
-    AnyAllResult result;
-    result.any = hitAny ? 1 : 0;
-    result.all = hitAll ? 1 : 0;
+    AnyAllResult result{};
+    result.any = hit_any ? 1 : 0;
+    result.all = hit_all ? 1 : 0;
     return result;
   }
 
   CirclesWithRanges getData(std::istream &is)
   {
-    Circle dummyCircle{};
-    CirclesWithRanges dataVec{};
+    Circle dummy_circle{};
+    CirclesWithRanges data_vec{};
 
-    while (is >> dummyCircle) {
-      dataVec.circles.emplace_back(dummyCircle);
+    while (is >> dummy_circle) {
+      data_vec.circles.emplace_back(dummy_circle);
     }
 
     if (!is.eof()) {
       throw std::invalid_argument("bad input file");
     }
 
-    dataVec.updateRanges();
-    return dataVec;
+    data_vec.updateRanges();
+    return data_vec;
   }
-  AnyAllResult runTests(size_t howManyTests, size_t seed, CirclesWithRanges const &cv)
+
+  AnyAllResult runTests(size_t how_many_tests, size_t seed, const CirclesWithRanges &cv)
   {
-    std::mt19937 gen(seed);
-    AnyAllResult result{0, 0};
+    std::default_random_engine gen(seed);
+    AnyAllResult result{};
 
-    BorderRange xRng = cv.ranges.xRange;
-    BorderRange yRng = cv.ranges.yRange;
+    const BorderRange x_rng = cv.ranges.x_range;
+    const BorderRange y_rng = cv.ranges.y_range;
 
-    std::uniform_real_distribution< double > xDist(xRng[0], xRng[1]);
-    std::uniform_real_distribution< double > yDist(yRng[0], yRng[1]);
+    std::uniform_real_distribution< double > x_dist(x_rng[0], x_rng[1]);
+    std::uniform_real_distribution< double > y_dist(y_rng[0], y_rng[1]);
 
-    for (size_t testCount = 0; testCount < howManyTests; ++testCount) {
-      double randX = xDist(gen);
-      double randY = yDist(gen);
+    for (size_t test_count = 0; test_count < how_many_tests; ++test_count) {
+      const double rand_x = x_dist(gen);
+      const double rand_y = y_dist(gen);
 
-      result += gotIn(cv, randX, randY);
+      result += gotIn(cv, rand_x, rand_y);
     }
 
     return result;
   }
-} // namespace levkin
+}

@@ -9,11 +9,14 @@ namespace levkin {
   using BorderRange = std::array< int, 2 >;
 
   struct Circle {
-    int x, y, radius;
+    int x = 0;
+    int y = 0;
+    int radius = 0;
   };
 
   struct AnyAllResult {
-    size_t any, all = 0;
+    size_t any = 0;
+    size_t all = 0;
 
     AnyAllResult &operator+=(const AnyAllResult &other)
     {
@@ -25,8 +28,8 @@ namespace levkin {
 
   struct CirclesWithRanges {
     struct Ranges {
-      BorderRange xRange;
-      BorderRange yRange;
+      BorderRange x_range;
+      BorderRange y_range;
     };
 
     std::vector< Circle > circles{};
@@ -35,13 +38,14 @@ namespace levkin {
     void updateRanges();
     size_t rangeArea() const;
   };
+
   std::istream &operator>>(std::istream &is, Circle &c);
 
   CirclesWithRanges getData(std::istream &is);
-  bool gotIn(levkin::Circle c, double x, double y);
-  AnyAllResult gotIn(CirclesWithRanges const &cv, double x, double y);
-  AnyAllResult runTests(size_t howManyTests, size_t seed, CirclesWithRanges const &cv);
-  std::array< BorderRange, 2 > getBorderSquare(Circle const &c);
-
+  bool gotIn(Circle c, double x, double y);
+  AnyAllResult gotIn(const CirclesWithRanges &cv, double x, double y);
+  AnyAllResult runTests(size_t how_many_tests, size_t seed, const CirclesWithRanges &cv);
+  std::array< BorderRange, 2 > getBorderSquare(const Circle &c);
 }
+
 #endif
