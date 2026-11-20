@@ -1,32 +1,43 @@
+#include "commands.hpp"
+#include "geometry.hpp"
+
+#include <csignal>
 #include <iostream>
-#include "io.hpp"
-#include <vector>
+#include <unordered_map>
 
-struct DB {
-  std::vector< int > processes;
-} db;
-
-void cmdCircle(DB*, std::istream& is, std::ostream& os)
-{
-  std::string dummy;
-  is >> dummy;
-  os << dummy << dummy << "\n";
-}
-
-void cmdRename(DB*, std::istream& is, std::ostream& os)
-{
-  std::string dummy;
-  is >> dummy;
-  os << dummy << dummy << "\n";
-}
 int main()
 {
-  using IO = levkin::IO< DB >;
+  struct sigaction action{};
+  action.sa_handler = SIG_IGN;
+  if (sigemptyset(&action.sa_mask) == -1 || sigaction(SIGPIPE, &action, nullptr) == -1) {
+    std::cerr << "cannot configure SIGPIPE\n";
+    return 1;
+  }
 
-  const std::array< IO::cmd_t, 2 > cmds = {{{&cmdCircle, "move"}, {&cmdRename, "rename"}}};
+  levkin::ellipses_t ellipses;
+  levkin::sets_t sets;
+  levkin::processes_t processes;
+  levkin::calcs_t calcs;
 
-  IO io(std::cin, std::cout, db, cmds);
-  const char* cmdd = "move" ;io.run(cmdd);
+  levkin::App app{ellipses, sets, processes, calcs};
 
-  std::cout << "levkin.dima\n" << sizeof(io);
+  std::unordered_map< std::string, levkin::cmd_t > cmds;
+  cmds["circle"] = levkin::cmdCircle;
+  cmds["ellipse"] = levkin::cmdEllipse;
+  cmds["rotate"] = levkin::cmdRotate;
+  cmds["set"] = levkin::cmdSet;
+  cmds["show"] = levkin::cmdShow;
+  cmds["showset"] = levkin::cmdShowSet;
+  cmds["frame"] = levkin::cmdFrame;
+  cmds["frameset"] = levkin::cmdFrameSet;
+  cmds["spawn"] = levkin::cmdSpawn;
+  cmds["area-on"] = levkin::cmdAreaOn;
+  cmds["status"] = levkin::cmdStatus;
+  cmds["wait"] = levkin::cmdWait;
+  cmds["timeout"] = levkin::cmdTimeout;
+  cmds["kill"] = levkin::cmdKill;
+
+  auto cmd_io = levkin::CommandIO{std::cout, cmds, app};
+  levkin::runCommands(std::cin, cmd_io);
+  levkin::shutdownProcesses(app);
 }
