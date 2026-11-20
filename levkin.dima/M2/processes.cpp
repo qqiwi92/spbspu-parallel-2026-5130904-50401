@@ -203,8 +203,8 @@ void levkin::startNextCalculation(App &app, process_t &process)
   }
 
   const size_t bytes = calc.ellipses.size() * sizeof(ellipse_t);
-  const size_t body_sent = detail::sendAll(
-      err, process.task_fd, reinterpret_cast< const char * >(calc.ellipses.data()), bytes);
+  const size_t body_sent
+      = detail::sendAll(err, process.task_fd, reinterpret_cast< const char * >(calc.ellipses.data()), bytes);
   if (err != 0 || body_sent != bytes) {
     calc.state = TaskState::Failed;
     throw std::runtime_error("cannot send task payload to process");
@@ -220,7 +220,8 @@ void levkin::receiveAvailableResult(App &app, process_t &process)
     return;
   }
 
-  char chunk[256]{};
+  constexpr size_t CHUNK_SIZE = 256;
+  char chunk[CHUNK_SIZE]{};
   while (true) {
     const ssize_t count = read(process.result_fd, chunk, sizeof(chunk));
     if (count == -1) {
